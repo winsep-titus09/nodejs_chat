@@ -1,0 +1,71 @@
+<div class="auth-grid">
+    <section class="hero card">
+        <div class="card-body">
+            <h1>Tạo tài khoản ✨</h1>
+            <p>Tham gia <%= brandName %> để nhắn tin tức thời, tạo nhóm và nhiều hơn nữa.</p>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="card-body">
+            <h2 style="margin:0 0 16px">Đăng ký</h2>
+
+            <form id="registerForm" method="POST" action="/api/auth/register" autocomplete="on" novalidate>
+                <div class="field">
+                    <label class="label">Tên hiển thị</label>
+                    <input class="input" name="name" placeholder="Nguyễn Văn A" required autocomplete="name" />
+                </div>
+                <div class="field">
+                    <label class="label">Email</label>
+                    <input class="input" name="email" type="email" placeholder="you@example.com" required
+                        autocomplete="email" />
+                </div>
+                <div class="field">
+                    <label class="label">Mật khẩu</label>
+                    <input class="input" name="password" type="password" placeholder="Tối thiểu 6 ký tự" required
+                        minlength="6" autocomplete="new-password" />
+                </div>
+                <button class="btn primary full" type="submit">Tạo tài khoản</button>
+                <div id="regError" class="err"></div>
+            </form>
+
+            <p class="meta" style="margin-top:10px">Đã có tài khoản?
+                <a href="/login">Đăng nhập</a>
+            </p>
+        </div>
+    </section>
+</div>
+
+<script>
+    (function () {
+        const form = document.getElementById('registerForm');
+        const errEl = document.getElementById('regError');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errEl.textContent = '';
+
+            const data = Object.fromEntries(new FormData(form));
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+                const js = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    errEl.textContent = js?.message || 'Đăng ký thất bại';
+                    toast(errEl.textContent);
+                    return;
+                }
+                toast('Đăng ký thành công! Chào mừng 👋');
+                location.href = '/chat';
+            } catch (err) {
+                errEl.textContent = 'Lỗi mạng. Vui lòng thử lại.';
+                toast(errEl.textContent);
+            }
+        });
+    })();
+</script>

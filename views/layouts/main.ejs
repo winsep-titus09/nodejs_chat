@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>
+        <%= (typeof title !=='undefined' ? title + " · " : "" ) + brandName %>
+    </title>
+    <link rel="icon" href="/img/logo.svg" />
+    <link rel="stylesheet" href="/css/app.css" />
+    <script defer src="/js/ui.js"></script>
+</head>
+
+<body>
+    <%- include("../partials/navbar") %>
+        <main class="wrap">
+            <%- body %>
+        </main>
+        <%- include("../partials/footer") %>
+            <%- include("../partials/toast") %>
+                <script src="/socket.io/socket.io.js"></script>
+                <script>
+                    window.__socket = null;
+                    (function () {
+                        try {
+                            // Cookie httpOnly chứa token → server xác thực từ cookie, client không cần truyền thêm gì
+                            window.__socket = io("/", { withCredentials: true });
+                            // bạn có thể nghe presence ở global nếu muốn
+                            // __socket.on("presence:online", d=>console.log("online", d));
+                            // __socket.on("presence:offline", d=>console.log("offline", d));
+                        } catch (e) { console.warn("Socket init failed", e); }
+                    })();
+                </script>
+
+</body>
+
+</html>

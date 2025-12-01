@@ -1,0 +1,68 @@
+<div class="auth-grid">
+    <section class="hero card">
+        <div class="card-body">
+            <h1>Chào mừng trở lại 👋</h1>
+            <p>Đăng nhập để tiếp tục cuộc trò chuyện với bạn bè & nhóm của bạn.</p>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="card-body">
+            <h2 style="margin:0 0 16px">Đăng nhập</h2>
+
+            <!-- QUAN TRỌNG: có method POST + action -->
+            <form id="loginForm" method="POST" action="/api/auth/login" autocomplete="on" novalidate>
+                <div class="field">
+                    <label class="label">Email</label>
+                    <input class="input" name="email" type="email" placeholder="you@example.com" autocomplete="username"
+                        required />
+                </div>
+                <div class="field">
+                    <label class="label">Mật khẩu</label>
+                    <input class="input" name="password" type="password" placeholder="••••••••"
+                        autocomplete="current-password" required minlength="6" />
+                </div>
+                <button class="btn primary full" type="submit">Đăng nhập</button>
+                <div id="loginError" class="err"></div>
+            </form>
+
+            <p class="meta" style="margin-top:10px">
+                Chưa có tài khoản? <a href="/register">Tạo mới</a>
+            </p>
+        </div>
+    </section>
+</div>
+
+<script>
+    (function () {
+        const form = document.getElementById('loginForm');
+        const errEl = document.getElementById('loginError');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // chặn submit mặc định
+            errEl.textContent = '';
+
+            const data = Object.fromEntries(new FormData(form));
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include', // đảm bảo cookie httpOnly được set/ gửi kèm
+                    body: JSON.stringify(data)
+                });
+                const js = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    errEl.textContent = js?.message || 'Đăng nhập thất bại';
+                    toast(errEl.textContent);
+                    return;
+                }
+                toast('Đăng nhập thành công!');
+                location.href = '/chat';
+            } catch (err) {
+                errEl.textContent = 'Lỗi mạng. Vui lòng thử lại.';
+                toast(errEl.textContent);
+            }
+        });
+    })();
+</script>

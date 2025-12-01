@@ -1,0 +1,1204 @@
+/* ====================== TOKENS / THEME ====================== */
+:root {
+    --brand: #0ea5e9;
+    --brand-600: #0284c7;
+
+    --surface: #ffffff;
+    --surface-2: #f3f4f6;
+    /* nền phụ */
+    --surface-1: var(--surface-2);
+    /* dùng cho header/panel */
+
+    --text: #0f172a;
+    --muted: #64748b;
+
+    --error: #dc2626;
+    --ok: #16a34a;
+
+    --ring: rgba(14, 165, 233, .35);
+    --shadow: 0 10px 30px rgba(2, 6, 23, .08);
+    --shadow-strong: 0 20px 40px rgba(2, 6, 23, .25), 0 2px 6px rgba(2, 6, 23, .15);
+
+    --radius: 14px;
+
+    --border: color-mix(in oklab, var(--text) 12%, transparent);
+    --border-soft: color-mix(in oklab, var(--text) 8%, transparent);
+    --backdrop: rgba(15, 23, 42, .45);
+
+    /* nếu có navbar cố định trên cùng, set ở global: body{ --app-header: 64px } */
+    --app-header: 0px;
+    --chat-h-desktop: 510px;
+
+    --sb-track: color-mix(in oklab, var(--text) 5%, transparent);
+    --sb-thumb: color-mix(in oklab, var(--text) 18%, transparent);
+    --sb-thumb-hover: color-mix(in oklab, var(--text) 28%, transparent);
+}
+
+html[data-theme="dark"] {
+    --surface: #0b1220;
+    --surface-2: #0f172a;
+    --surface-1: var(--surface-2);
+
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+
+    --shadow: 0 10px 30px rgba(0, 0, 0, .45);
+    --shadow-strong: 0 20px 40px rgba(0, 0, 0, .45), 0 2px 6px rgba(0, 0, 0, .35);
+
+    --border: color-mix(in oklab, var(--text) 20%, transparent);
+    --border-soft: color-mix(in oklab, var(--text) 12%, transparent);
+    --backdrop: rgba(2, 6, 23, .6);
+
+    --sb-track: color-mix(in oklab, var(--text) 10%, transparent);
+    --sb-thumb: color-mix(in oklab, var(--text) 22%, transparent);
+    --sb-thumb-hover: color-mix(in oklab, var(--text) 36%, transparent);
+}
+
+/* ====================== RESET ====================== */
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    height: 100%
+}
+
+body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background:
+        radial-gradient(1200px 700px at 10% -10%, rgba(14, 165, 233, .18), transparent),
+        radial-gradient(1000px 600px at 110% -20%, rgba(99, 102, 241, .16), transparent),
+        var(--surface-2);
+    color: var(--text);
+}
+
+/* ====================== NAVBAR ====================== */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    backdrop-filter: blur(8px);
+    background: color-mix(in oklab, var(--surface) 86%, transparent);
+    border-bottom: 1px solid color-mix(in oklab, var(--text) 10%, transparent);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+.logo {
+    width: 26px;
+    height: 26px
+}
+
+.brand {
+    text-decoration: none;
+    font-weight: 700;
+    color: var(--text)
+}
+
+/* ====================== CONTAINERS ====================== */
+.wrap {
+    width: min(1100px, 94%);
+    margin: 32px auto
+}
+
+/* ====================== CARDS / FORMS ====================== */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.auth-grid {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 24px
+}
+
+@media (max-width: 880px) {
+    .auth-grid {
+        grid-template-columns: 1fr
+    }
+}
+
+.hero {
+    padding: 32px;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, rgba(14, 165, 233, .12), rgba(99, 102, 241, .12));
+    border: 1px dashed var(--border);
+}
+
+.hero h1 {
+    margin: 0 0 12px
+}
+
+.hero p {
+    margin: 0;
+    color: var(--muted)
+}
+
+.card-body {
+    padding: 26px
+}
+
+/* ====================== INPUTS / BUTTONS ====================== */
+.field {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 14px
+}
+
+.label {
+    font-size: 14px;
+    color: var(--muted)
+}
+
+.input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+}
+
+.input:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 4px var(--ring)
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    background: color-mix(in oklab, var(--text) 8%, transparent);
+    color: var(--text);
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn.small {
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-weight: 600
+}
+
+.btn.ghost {
+    background: transparent;
+    border-color: var(--border)
+}
+
+.btn.primary {
+    background: var(--brand);
+    color: #fff;
+    border-color: var(--brand-600)
+}
+
+.btn.primary:hover {
+    background: var(--brand-600)
+}
+
+.btn.full {
+    width: 100%
+}
+
+.btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--ring)
+}
+
+/* ====================== TEXT HELPERS ====================== */
+.meta {
+    color: var(--muted);
+    font-size: 14px
+}
+
+.err {
+    color: var(--error);
+    font-size: 14px;
+    min-height: 18px
+}
+
+.ok {
+    color: var(--ok)
+}
+
+.footer {
+    text-align: center;
+    color: var(--muted);
+    padding: 36px 20px
+}
+
+/* ====================== TOAST ====================== */
+.toast {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 26px;
+    min-width: 280px;
+    max-width: 90%;
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    pointer-events: none;
+    transition: .25s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    pointer-events: auto
+}
+
+/* ====================== AUTOCOMPLETE ====================== */
+.autocomplete {
+    position: relative
+}
+
+.input-wrap {
+    position: relative
+}
+
+.suggest {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    max-height: 260px;
+    overflow: auto;
+    padding: 4px;
+    z-index: 30;
+}
+
+.suggest li {
+    list-style: none;
+    padding: 10px 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.suggest li:hover {
+    background: color-mix(in oklab, var(--text) 6%, transparent)
+}
+
+.suggest .btn.small {
+    margin-left: auto
+}
+
+/* ====================== CHAT LAYOUT ====================== */
+/* Toàn khối chat bám theo chiều cao màn hình (nếu có header cố định: body{--app-header:64px}) */
+.chat-grid {
+    height: var(--chat-h-desktop);
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 18px;
+    padding: 16px;
+    /* tránh tràn ra ngoài, phần cuộn sẽ ở con */
+    overflow: hidden;
+}
+
+.chat-grid>* {
+    min-height: 0
+}
+
+/* cho phép phần con co lại để vùng cuộn hoạt động */
+
+@media (max-width: 980px) {
+    .chat-grid {
+        grid-template-columns: 1fr
+    }
+}
+
+/* -------- Sidebar -------- */
+.chat-grid>* {
+    min-height: 0;
+}
+
+/* ====== Sidebar (cột trái) cuộn trong .list ====== */
+.side {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* bám theo chiều cao cố định của .chat-grid */
+    min-height: 0;
+    /* cho phép con co lại */
+}
+
+.side .side-head {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 10px
+}
+
+.side .tabs {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border)
+}
+
+.side .search {
+    flex: 1;
+    position: relative
+}
+
+.side .search input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.side .search svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: .5
+}
+
+.tab {
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.tab.active {
+    background: color-mix(in oklab, var(--brand) 18%, transparent);
+    color: var(--text)
+}
+
+.list {
+    flex: 1 1 auto;
+    min-height: 0;
+    /* quan trọng */
+    overflow: auto;
+    /* cuộn danh sách bạn/nhóm */
+    padding: 6px 8px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.item:hover {
+    background: color-mix(in oklab, var(--text) 6%, transparent)
+}
+
+.item.active {
+    background: color-mix(in oklab, var(--brand) 14%, transparent)
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    display: grid;
+    place-items: center;
+    font-weight: 700
+}
+
+.badge-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #94a3b8;
+    margin-left: auto
+}
+
+.badge-dot.online {
+    background: #10b981
+}
+
+/* -------- Conversation -------- */
+.convo {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    /* head | msgs(scroll) | composer */
+    height: 100%;
+    min-height: 0;
+}
+
+.convo-head {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.convo-head .title {
+    font-weight: 700
+}
+
+.convo-head .sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-left: auto
+}
+
+/* Vùng CUỘN tin nhắn */
+.msgs {
+    min-height: 0;
+    /* then chốt: cho phép co */
+    overflow: auto;
+    /* cuộn nội dung tin nhắn/thông báo */
+    padding: 14px;
+    background: var(--surface-2);
+}
+
+/* Tin nhắn */
+.row {
+    display: flex;
+    margin-bottom: 8px;
+    gap: 8px;
+    align-items: flex-end
+}
+
+.row.me {
+    flex-direction: row-reverse
+}
+
+.bubble {
+    max-width: 62%;
+    padding: 10px 12px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+}
+
+.row.me .bubble {
+    background: #dcf8c6
+}
+
+.time {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0 8px
+}
+
+.bubble img {
+    max-width: 260px;
+    border-radius: 10px;
+    display: block
+}
+
+/* Composer */
+.composer {
+    padding: 10px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.input-ghost {
+    flex: 1;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+}
+
+.attach {
+    position: relative
+}
+
+.attach input[type=file] {
+    display: none
+}
+
+.preview {
+    display: none;
+    gap: 8px;
+    align-items: center;
+    margin-left: 8px
+}
+
+.preview.show {
+    display: flex
+}
+
+.preview img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb
+}
+
+.typing {
+    color: var(--muted);
+    font-size: 13px
+}
+
+/* -------- Avatar + Status dot -------- */
+.avatar-wrap {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #e2e8f0;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    color: #334155
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+}
+
+.status-dot {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--surface, #fff);
+    background-color: #94a3b8;
+    transition: background-color .2s ease;
+}
+
+.status-dot.online {
+    background-color: #10b981
+}
+
+.status-dot.offline {
+    background-color: #94a3b8
+}
+
+/* Avatar lớn ở header convo */
+.chat-avatar {
+    position: relative;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0
+}
+
+.chat-avatar .status-dot {
+    right: 0;
+    bottom: 0;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--surface, #fff);
+    background: #94a3b8;
+    transition: background .2s ease
+}
+
+.chat-avatar .status-dot.online {
+    background: #10b981
+}
+
+.chat-avatar .status-dot.offline {
+    background: #94a3b8
+}
+
+/* ====================== GROUP ACTIONS (kebab) ====================== */
+.convo-actions {
+    position: relative
+}
+
+.icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    border: 1px solid color-mix(in oklab, var(--text) 16%, transparent);
+    background: transparent;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    background: color-mix(in oklab, var(--text) 6%, transparent)
+}
+
+.menu {
+    position: absolute;
+    right: 0;
+    top: 42px;
+    min-width: 200px;
+    z-index: 60;
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 6px;
+}
+
+.menu.hidden {
+    display: none
+}
+
+.menu-item {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.menu-item:hover {
+    background: color-mix(in oklab, var(--text) 6%, transparent)
+}
+
+.menu-item.danger {
+    color: #ef4444
+}
+
+/* ====================== SYSTEM NOTICE ====================== */
+.msgs .row.system {
+    display: flex;
+    justify-content: center;
+    margin: 12px 0
+}
+
+.system-line {
+    max-width: 80%;
+    text-align: center;
+    color: #64748b;
+    font-size: 13px;
+    background: rgba(100, 116, 139, .08);
+    padding: 6px 10px;
+    border-radius: 999px;
+}
+
+.system-line .meta {
+    margin-left: 8px;
+    font-size: 12px;
+    opacity: .8
+}
+
+/* ====================== MODALS ====================== */
+.modal.hidden {
+    display: none
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .35);
+    backdrop-filter: blur(2px)
+}
+
+.modal-body {
+    position: relative;
+    width: min(720px, 92vw);
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 18px;
+}
+
+.modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 6px 12px 6px
+}
+
+.modal-head h3 {
+    margin: 0;
+    font-size: 18px
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding-top: 10px
+}
+
+.gm-grid {
+    display: grid;
+    gap: 14px
+}
+
+.gm-search {
+    position: relative
+}
+
+.gm-search input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+}
+
+.gm-search svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: .55
+}
+
+.gm-list {
+    margin-top: 10px;
+    max-height: 320px;
+    overflow: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface-2);
+    padding: 6px;
+}
+
+.gm-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer
+}
+
+.gm-item:hover {
+    background: color-mix(in oklab, var(--text) 6%, transparent)
+}
+
+.gm-item .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    display: grid;
+    place-items: center;
+    font-weight: 700
+}
+
+.gm-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+.gm-check {
+    width: 18px;
+    height: 18px
+}
+
+.btn.icon {
+    background: transparent;
+    border: 1px solid color-mix(in oklab, var(--text) 18%, transparent)
+}
+
+/* ---- Modal chuẩn hoá (Kick members modal dùng block bên dưới) ---- */
+.modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--backdrop);
+    backdrop-filter: blur(2px)
+}
+
+.modal__panel {
+    position: relative;
+    width: min(560px, calc(100% - 32px));
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-strong);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    opacity: 1 !important;
+}
+
+.modal__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface-1);
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.modal__body {
+    padding: 14px 16px;
+    background: var(--surface)
+}
+
+.modal__foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--surface-1);
+    border-top: 1px solid var(--border-soft);
+}
+
+.modal__body .input {
+    width: 100%;
+    height: 38px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+}
+
+/* ====================== KICK MEMBERS LIST ====================== */
+.km-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px
+}
+
+.km-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+.km-row {
+    display: grid;
+    grid-template-columns: 48px 1fr 100px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--surface);
+}
+
+.km-row:last-child {
+    border-bottom: none
+}
+
+.km-row .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #e2e8f0;
+    font-weight: 700;
+    color: var(--text)
+}
+
+.km-name {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text)
+}
+
+.km-meta {
+    font-size: 12px;
+    color: var(--muted)
+}
+
+.km-right {
+    justify-self: end
+}
+
+.km-empty {
+    padding: 14px;
+    text-align: center;
+    color: var(--muted)
+}
+
+.msgs,
+.list,
+.gm-list,
+.km-list,
+.suggest {
+    /* Firefox */
+    scrollbar-width: thin;
+    /* thin/auto */
+    scrollbar-color: var(--sb-thumb) transparent;
+    /* thumb | track */
+}
+
+/* WebKit (Chrome/Edge/Safari/Opera) */
+.msgs::-webkit-scrollbar,
+.list::-webkit-scrollbar,
+.gm-list::-webkit-scrollbar,
+.km-list::-webkit-scrollbar,
+.suggest::-webkit-scrollbar {
+    width: 10px;
+    /* dày scrollbar */
+    height: 10px;
+    /* ngang (nếu cần) */
+}
+
+.msgs::-webkit-scrollbar-track,
+.list::-webkit-scrollbar-track,
+.gm-list::-webkit-scrollbar-track,
+.km-list::-webkit-scrollbar-track,
+.suggest::-webkit-scrollbar-track {
+    background: transparent;
+    /* mặc định trong suốt */
+    border-radius: 10px;
+}
+
+.msgs::-webkit-scrollbar-thumb,
+.list::-webkit-scrollbar-thumb,
+.gm-list::-webkit-scrollbar-thumb,
+.km-list::-webkit-scrollbar-thumb,
+.suggest::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    /* tạo “rãnh” đẹp */
+    background-clip: padding-box;
+    /* để viền trong suốt */
+    transition: background .2s ease;
+}
+
+.msgs:hover::-webkit-scrollbar-thumb,
+.list:hover::-webkit-scrollbar-thumb,
+.gm-list:hover::-webkit-scrollbar-thumb,
+.km-list:hover::-webkit-scrollbar-thumb,
+.suggest:hover::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-hover);
+    /* đậm hơn khi hover vùng cuộn */
+}
+
+/* Hiện track mờ khi hover vùng cuộn */
+.msgs:hover::-webkit-scrollbar-track,
+.list:hover::-webkit-scrollbar-track,
+.gm-list:hover::-webkit-scrollbar-track,
+.km-list:hover::-webkit-scrollbar-track,
+.suggest:hover::-webkit-scrollbar-track {
+    background: var(--sb-track);
+}
+
+.emoji-wrap {
+    position: relative
+}
+
+.emoji-pane {
+    position: absolute;
+    bottom: 44px;
+    left: 0;
+    width: 280px;
+    max-height: 220px;
+    overflow: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+    z-index: 40;
+}
+
+.emoji-pane.hidden {
+    display: none
+}
+
+.emoji-item {
+    font-size: 22px;
+    line-height: 1;
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.emoji-item:hover {
+    background: color-mix(in oklab, var(--text) 6%, transparent);
+}
+
+.bubble.emote {
+    font-size: 36px;
+    padding: 10px 14px;
+    line-height: 1.1
+}
+
+.composer {
+    position: relative;
+}
+
+emoji-picker {
+    position: absolute;
+    bottom: 60px;
+    /* cao hơn composer một chút */
+    left: 10px;
+    z-index: 1000;
+    max-height: 300px;
+    width: 350px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg, #fff);
+}
+
+emoji-picker.hidden {
+    display: none !important;
+}
+
+/* Nút Thu hồi (chỉ hiện khi hover tin của mình) */
+.row.me .bubble {
+    position: relative;
+    display: inline-block;
+}
+
+.msg-recall-btn {
+    display: none;
+    position: absolute;
+    left: -70px;
+    top: -1px;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 8px;
+    border: 1px solid color-mix(in oklab, var(--text) 12%, transparent);
+    background: color-mix(in oklab, var(--text) 6%, transparent);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.row.me:hover .msg-recall-btn {
+    display: inline-flex;
+}
+
+/* ---- Typing bubble inside chat ---- */
+.row.typing {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.row.typing .bubble {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 8px 12px;
+    border-radius: 14px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.typing-dots {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.typing-dots i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #94a3b8;
+    display: inline-block;
+    opacity: .6;
+}
+
+.typing-dots i:nth-child(1) {
+    animation: blink 1s infinite .0s;
+}
+
+.typing-dots i:nth-child(2) {
+    animation: blink 1s infinite .15s;
+}
+
+.typing-dots i:nth-child(3) {
+    animation: blink 1s infinite .30s;
+}
+
+@keyframes blink {
+
+    0%,
+    60%,
+    100% {
+        opacity: .25;
+        transform: translateY(0);
+    }
+
+    30% {
+        opacity: .9;
+        transform: translateY(-2px);
+    }
+}
+
+.msgs .row .sender-name {
+    font-size: 12px;
+    color: #6b7280;
+    /* slate-500 */
+    margin: 0 0 4px 4px;
+    font-weight: 600;
+}
+
+.msgs .row.me .sender-name {
+    display: none;
+}
+
+/* không cần tên của mình */

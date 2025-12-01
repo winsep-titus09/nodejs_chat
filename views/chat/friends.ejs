@@ -1,0 +1,182 @@
+<section class="card">
+    <div class="card-body">
+        <h2 style="margin:0 0 12px">Kết bạn</h2>
+
+        <div class="field autocomplete">
+            <label class="label">Tìm theo tên:</label>
+            <div class="input-wrap">
+                <input id="nameSearch" class="input" placeholder="Nhập tên bạn bè..." autocomplete="off" />
+                <ul id="suggest" class="suggest"></ul>
+            </div>
+        </div>
+
+
+        <hr style="margin:16px 0;opacity:.2" />
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div>
+                <h3>Lời mời đến (incoming)</h3>
+                <ul id="incoming"></ul>
+            </div>
+            <div>
+                <h3>Lời mời đã gửi (outgoing)</h3>
+                <ul id="outgoing"></ul>
+            </div>
+        </div>
+
+        <hr style="margin:16px 0;opacity:.2" />
+
+        <div>
+            <h3>Bạn bè</h3>
+            <ul id="friends"></ul>
+        </div>
+    </div>
+</section>
+
+<script>
+    const socket = window.__socket;
+    async function json(url, opts) { const r = await fetch(url, opts); const j = await r.json(); if (!r.ok) throw new Error(j.message || 'Error'); return j; }
+
+    // --- SEARCH BY NAME with debounce ---
+    const nameInput = document.getElementById('nameSearch');
+    const suggest = document.getElementById('suggest');
+    let tSearch = null;
+
+    nameInput.addEventListener('input', () => {
+        clearTimeout(tSearch);
+        const q = nameInput.value.trim();
+        if (!q) { suggest.style.display = 'none'; suggest.innerHTML = ''; return; }
+        tSearch = setTimeout(async () => {
+            try {
+                const res = await json('/api/users/search?q=' + encodeURIComponent(q));
+                suggest.innerHTML = '';
+                if (!res.data.length) { suggest.style.display = 'none'; return; }
+                res.data.forEach(u => {
+                    const li = document.createElement('li');
+                    li.style.listStyle = 'none'; li.style.padding = '8px 10px'; li.style.borderRadius = '10px'; li.style.cursor = 'pointer';
+                    li.innerHTML = `<strong>${u.name}</strong> <span class="meta">(${u.email})</span>
+                          <button class="btn small" style="float:right">Mời kết bạn</button>`;
+                    li.querySelector('button').onclick = async (e) => {
+                        e.stopPropagation();
+                        try {
+                            await json('/api/friends/request', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: u._id }) });
+                            toast('Đã gửi lời mời đến ' + u.name);
+                            suggest.style.display = 'none';
+                            nameInput.value = '';
+                            load();
+                        } catch (err) { toast(err.message); }
+                    };
+                    li.onclick = () => { }; // có thể mở profile/preview sau
+                    suggest.appendChild(li);
+                });
+                suggest.style.display = 'block';
+            } catch (e) {
+                suggest.style.display = 'none';
+            }
+        }, 250); // debounce 250ms
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!suggest.contains(e.target) && e.target !== nameInput) {
+            suggest.style.display = 'none';
+        }
+    });
+    // --- END SEARCH ---
+
+    async function load() {
+        const [inc, out, fs] = await Promise.all([
+            json('/api/friends/requests?type=incoming'),
+            json('/api/friends/requests?type=outgoing'),
+            json('/api/friends/list')
+        ]);
+        renderRequests('incoming', inc.data, 'incoming');
+        renderRequests('outgoing', out.data, 'outgoing');
+
+        const ul = document.getElementById('friends'); ul.innerHTML = '';
+        fs.data.forEach(u => {
+            const li = document.createElement('li');
+            li.innerHTML = `${u.name} (${u.email}) <button data-id="${u._id}" class="btn small">Hủy bạn</button>`;
+            li.querySelector('button').onclick = async () => {
+                try {
+                    await json('/api/friends/unfriend', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ friendId: u._id }) });
+                    toast('Đã hủy bạn với ' + u.name);
+                    load();
+                } catch (err) { toast(err.message); }
+            };
+            ul.appendChild(li);
+        });
+    }
+
+    function renderRequests(id, arr, type) {
+        const ul = document.getElementById(id); ul.innerHTML = '';
+        arr.forEach(fr => {
+            const who = type === 'incoming' ? fr.requester : fr.recipient;
+            const li = document.createElement('li');
+            li.innerHTML = `${who.name} (${who.email}) `;
+            if (type === 'incoming') {
+                const acceptBtn = document.createElement('button');
+                acceptBtn.className = 'btn small';
+                acceptBtn.textContent = 'Đồng ý';
+                acceptBtn.onclick = async () => {
+                    try {
+                        await json('/api/friends/accept', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ requestId: fr._id }) });
+                        toast('Đã chấp nhận');
+                        load();
+                    } catch (err) { toast(err.message); }
+                };
+                const declineBtn = document.createElement('button');
+                declineBtn.className = 'btn small';
+                declineBtn.style.marginLeft = '6px';
+                declineBtn.textContent = 'Từ chối';
+                declineBtn.onclick = async () => {
+                    try {
+                        await json('/api/friends/decline', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ requestId: fr._id }) });
+                        toast('Đã từ chối');
+                        load();
+                    } catch (err) { toast(err.message); }
+                };
+                li.appendChild(acceptBtn); li.appendChild(declineBtn);
+            } else {
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'btn small';
+                cancelBtn.textContent = 'Hủy lời mời';
+                cancelBtn.onclick = async () => {
+                    try {
+                        await json('/api/friends/cancel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ requestId: fr._id }) });
+                        toast('Đã hủy lời mời');
+                        load();
+                    } catch (err) { toast(err.message); }
+                };
+                li.appendChild(cancelBtn);
+            }
+            ul.appendChild(li);
+        });
+    }
+
+    // --- LẮNG NGHE SOCKET SỰ KIỆN FRIEND ---
+    if (socket) {
+        socket.on("friend:request", ({ requester }) => {
+            toast(`Có lời mời kết bạn từ ${requester?.name || 'ai đó'}`);
+            load();
+        });
+        socket.on("friend:accept", ({ user }) => {
+            toast(`${user?.name || 'Ai đó'} đã chấp nhận lời mời`);
+            load();
+        });
+        socket.on("friend:decline", ({ by }) => {
+            toast(`Lời mời đã bị từ chối`);
+            load();
+        });
+        socket.on("friend:cancel", ({ by }) => {
+            toast(`Đối phương đã hủy lời mời`);
+            load();
+        });
+        socket.on("friend:unfriend", ({ by }) => {
+            toast(`Bạn đã bị hủy bạn`);
+            load();
+        });
+    }
+    // --- END SOCKET ---
+
+    load();
+</script>

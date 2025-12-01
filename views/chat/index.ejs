@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Chat</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+
+<body>
+    <section class="chat-grid">
+        <!-- Sidebar -->
+        <aside class="side">
+            <div class="side-head">
+                <div class="search">
+                    <svg width="18" height="18" viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79L20 21.49L21.49 20zM4 9.5C4 6.46 6.46 4 9.5 4S15 6.46 15 9.5S12.54 15 9.5 15S4 12.54 4 9.5" />
+                    </svg>
+                    <input id="sideSearch" placeholder="Tìm bạn theo tên..." />
+                </div>
+                <div class="side-actions">
+                    <a href="/friends" class="btn">Kết bạn</a>
+                    <button id="btnNewGroup" class="btn small">+ Tạo nhóm</button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="friends">Bạn bè</div>
+                <div class="tab" data-tab="groups">Nhóm</div>
+            </div>
+
+            <div class="list" id="sideList"></div>
+        </aside>
+
+        <!-- Conversation -->
+        <section class="convo">
+            <div class="convo-head">
+                <div class="avatar-wrap chat-avatar">
+                    <div class="avatar" id="roomAvatar"></div>
+                    <span class="status-dot offline" id="chatStatusDot"></span>
+                </div>
+                <div class="title" id="roomTitle">Chưa chọn cuộc trò chuyện</div>
+                <div class="sub">
+                    <span id="typing" class="typing"
+                        style="min-height:18px; display:inline-block; color:#888; font-style:italic;"></span>
+                </div>
+                <div class="convo-actions" id="groupActions" style="margin-left:auto; display:none;">
+                    <button class="icon-btn" id="btnGroupMenu" aria-haspopup="true" aria-expanded="false"
+                        title="Tùy chọn">⋯</button>
+                    <div class="menu hidden" id="groupMenu" role="menu" aria-hidden="true">
+                        <button class="menu-item" id="miAddMembers" role="menuitem">+ Thêm thành viên</button>
+                        <button class="menu-item danger" id="miKick" role="menuitem" style="display:none;">Đuổi thành
+                            viên</button>
+                        <button class="menu-item" id="miLeave" role="menuitem">Rời nhóm</button>
+                        <button class="menu-item danger" id="miDelete" role="menuitem" style="display:none;">Xóa
+                            nhóm</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="msgs" id="msgs"></div>
+
+            <form id="composer" class="composer">
+                <div class="attach">
+                    <label class="btn small" for="imgInput">Ảnh</label>
+                    <input id="imgInput" type="file" accept="image/*">
+                </div>
+
+                <!-- Emoji -->
+                <button id="btnEmoji" class="btn small" type="button" title="Emoji">😊</button>
+                <emoji-picker id="emojiPicker" class="hidden"></emoji-picker>
+
+                <input id="textInput" class="input-ghost" placeholder="Aa" autocomplete="off" />
+                <div class="preview" id="preview"><img id="prevImg" alt=""><button class="btn small" id="clearPrev"
+                        type="button">X</button></div>
+                <button class="btn primary" type="submit">Gửi</button>
+            </form>
+        </section>
+    </section>
+
+    <!-- Group Create Modal -->
+    <div id="groupModal" class="modal hidden" aria-hidden="true">
+        <div class="modal-backdrop" data-close="1"></div>
+        <div class="modal-body card">
+            <header class="modal-head">
+                <h3>Tạo nhóm mới</h3>
+                <button class="btn icon" id="gmClose" aria-label="Đóng">✕</button>
+            </header>
+
+            <form id="gmForm" class="gm-grid" autocomplete="off">
+                <div class="field">
+                    <label class="label">Tên nhóm</label>
+                    <input id="gmName" class="input" placeholder="Nhập tên nhóm..." required />
+                </div>
+
+                <div class="field">
+                    <label class="label">Mời bạn bè</label>
+                    <div class="gm-search">
+                        <svg width="18" height="18" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79L20 21.49L21.49 20zM4 9.5C4 6.46 6.46 4 9.5 4S15 6.46 15 9.5S12.54 15 9.5 15S4 12.54 4 9.5" />
+                        </svg>
+                        <input id="gmFind" placeholder="Tìm theo tên bạn bè..." />
+                    </div>
+                    <div id="gmList" class="gm-list"></div>
+                </div>
+
+                <footer class="modal-actions">
+                    <button type="button" class="btn" id="gmCancel">Hủy</button>
+                    <button type="submit" class="btn primary" id="gmCreate">Tạo nhóm</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+    <!-- Add Members Modal -->
+    <div id="addMemberModal" class="modal hidden" aria-hidden="true">
+        <div class="modal-backdrop" data-close="1"></div>
+        <div class="modal-body card">
+            <header class="modal-head">
+                <h3>Thêm thành viên vào nhóm</h3>
+                <button class="btn icon" id="amClose" aria-label="Đóng">✕</button>
+            </header>
+
+            <form id="amForm" class="gm-grid" autocomplete="off">
+                <div class="field">
+                    <label class="label">Tìm bạn bè</label>
+                    <div class="gm-search">
+                        <svg width="18" height="18" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79L20 21.49L21.49 20zM4 9.5C4 6.46 6.46 4 9.5 4S15 6.46 15 9.5S12.54 15 9.5 15S4 12.54 4 9.5" />
+                        </svg>
+                        <input id="amFind" placeholder="Tìm theo tên bạn bè..." />
+                    </div>
+                    <div id="amList" class="gm-list"></div>
+                </div>
+
+                <footer class="modal-actions">
+                    <button type="button" class="btn" id="amCancel">Hủy</button>
+                    <button type="submit" class="btn primary" id="amSubmit">Thêm</button>
+                </footer>
+            </form>
+        </div>
+    </div>
+    <!-- Kick Members Modal -->
+    <div class="modal hidden" id="kickMemberModal" aria-hidden="true">
+        <div class="modal__backdrop" data-close="1"></div>
+        <div class="modal__panel">
+            <div class="modal__head">
+                <h3>Đuổi thành viên</h3>
+                <button class="icon x" id="kmClose">×</button>
+            </div>
+
+            <form id="kmForm" class="modal__body">
+                <div class="km-head">
+                    <input id="kmFind" class="input" placeholder="Tìm theo tên...">
+                </div>
+
+                <div id="kmList" class="km-list"><!-- rows render bằng JS --></div>
+
+                <div class="modal__foot">
+                    <button type="button" class="btn" id="kmCancel">Hủy</button>
+                    <button type="submit" class="btn danger">Đuổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+    <script defer src="/js/chat.js"></script>
+</body>
+
+</html>

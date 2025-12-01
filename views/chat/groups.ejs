@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nhóm Chat</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="/css/groups.css">
+</head>
+
+<body>
+    <div class="group-container">
+        <a href="/chat" class="back-link">← Quay lại chat</a>
+
+        <h2>Tạo nhóm mới</h2>
+        <form id="createForm" class="form-create">
+            <input id="groupName" placeholder="Nhập tên nhóm..." required />
+            <button type="submit">Tạo nhóm</button>
+        </form>
+
+        <h2>Nhóm của tôi</h2>
+        <div id="groupList" class="group-list">
+            <p class="meta">Đang tải danh sách nhóm...</p>
+        </div>
+
+        <section class="invite-section">
+            <h2>Lời mời nhóm</h2>
+            <div id="inviteList" class="invite-list"></div>
+        </section>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/groups.js"></script>
+</body>
+
+</html>
